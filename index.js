@@ -70,6 +70,21 @@ async function run(){
       const result = await eventsCollection.insertOne(events);
       res.json(result)
     })
+    app.get('/users',async (req, res) => {
+      const cursor = usersCollection.find();
+          const result = await cursor.toArray();
+          res.json(result);
+    })
+    app.get('/users/:email', async (req, res) => {
+      const email= req.params.email;
+      const query = { email: email };
+          const user = await usersCollection.findOne(query);
+          let isAdmin = false;
+          if (user?.userType === 'admin') {
+              isAdmin = true;
+          }
+          res.json({ admin: isAdmin });
+    })
     app.post('/users', async (req, res) => {
       let user = req.body;
       const result = await usersCollection.insertOne(user);
@@ -86,7 +101,12 @@ async function run(){
       console.log("ok");
       res.json(result);
   });
-
+  app.delete('/users/:id',async(req,res)=>{
+    const id= req.params.id;
+    const query ={_id: new ObjectId(id)};
+    const result = await usersCollection.deleteOne(query);
+    res.json(result);
+  })
 
   } finally  {
     
