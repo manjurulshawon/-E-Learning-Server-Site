@@ -15,6 +15,8 @@ async function run(){
     await client.connect();
     const database = client.db('eLearning');
     const coursesCollection = database.collection('courses');
+    const eventsCollection = database.collection('events');
+    const usersCollection = database.collection('users');
     console.log("Connect to DB");
     app.get('/courses',async (req, res) => {
       const cursor = coursesCollection.find();
@@ -47,6 +49,43 @@ async function run(){
       const result = await coursesCollection.updateOne(filter, updateDoc);
       res.json(result);
     });
+
+
+    // Events
+
+    app.get('/events',async (req, res) => {
+      const cursor = eventsCollection.find();
+          const result = await cursor.toArray();
+          res.json(result);
+    })
+    app.get('/events/:id', async (req, res) => {
+      const id= req.params.id;
+      const query ={_id: new ObjectId(id)};
+      console.log('get id')
+      const result = await eventsCollection.findOne(query);
+      res.json(result);
+    })
+    app.post('/events', async(req, res) => {
+      const events = req.body;
+      const result = await eventsCollection.insertOne(events);
+      res.json(result)
+    })
+    app.post('/users', async (req, res) => {
+      let user = req.body;
+      const result = await usersCollection.insertOne(user);
+      console.log(result);
+      res.json(result);
+  });
+
+  app.put('/users', async (req, res) => {
+      let user = req.body;
+      const filter = { email: user.email };
+      const options = { upsert: true };
+      const updateDoc = { $set: user };
+      const result = await usersCollection.updateOne(filter, updateDoc, options);
+      console.log("ok");
+      res.json(result);
+  });
 
 
   } finally  {
