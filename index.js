@@ -21,6 +21,8 @@ async function run() {
     const coursesCollection = database.collection("courses");
     const eventsCollection = database.collection("events");
     const usersCollection = database.collection("users");
+    const contactCollection = database.collection("contacts");
+    const enrollsCollection = database.collection("enrolls");
     console.log("Connect to DB");
     app.get("/courses", async (req, res) => {
       const cursor = coursesCollection.find();
@@ -119,6 +121,45 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await usersCollection.deleteOne(query);
+      res.json(result);
+    });
+
+    app.get("/contacts", async (req, res) => {
+      const cursor = contactCollection.find();
+      const result = await cursor.toArray();
+      res.json(result);
+    });
+
+    app.post("/contacts", async (req, res) => {
+      let data = req.body;
+      const result = await contactCollection.insertOne(data);
+      console.log(result);
+      res.json(result);
+    });
+    app.get("/enrolls", async (req, res) => {
+      const cursor = enrollsCollection.find();
+      const result = await cursor.toArray();
+      res.json(result);
+    });
+    app.post("/enrolls", async (req, res) => {
+      let data = req.body;
+      const result = await enrollsCollection.insertOne(data);
+      console.log(result);
+      res.json(result);
+    });
+    app.put("/enrolls/:id", async (req, res) => {
+      console.log("ok", req.body);
+      const id = req.params.id;
+      const status = req.body.status;
+      const filter = { _id: new ObjectId(id) };
+      // const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          status: status,
+        },
+      };
+      const result = await enrollsCollection.updateOne(filter, updateDoc);
+      console.log("ok");
       res.json(result);
     });
   } finally {
