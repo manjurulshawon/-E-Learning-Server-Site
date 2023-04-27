@@ -46,7 +46,9 @@ async function run() {
 
     app.put("/courses/:id", async (req, res) => {
       const id = req.params.id;
+      console.log(id);
       const updateData = req.body;
+      console.log(updateData);
       const filter = { _id: new ObjectId(id) };
       // const options = { upsert: true };
       const updateDoc = {
@@ -95,7 +97,7 @@ async function run() {
       if (user?.userType === "admin") {
         isAdmin = true;
       }
-      res.json({ admin: isAdmin });
+      res.json({ user:user, admin: isAdmin });
     });
     app.post("/users", async (req, res) => {
       let user = req.body;
