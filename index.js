@@ -126,6 +126,28 @@ async function run() {
       res.json(result);
     });
 
+
+    //Make Admin
+
+     app.put("/users/:email", async (req, res) => {
+      console.log("ok", req.body);
+      const email = req.params.email;
+      let user = req.body
+
+      const filter = { email: email };
+      // const filter = { _id: new ObjectId(id) };
+      // const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          
+        userType: "admin",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      console.log("ok");
+      res.json(result);
+    });
+
     app.get("/contacts", async (req, res) => {
       const cursor = contactCollection.find();
       const result = await cursor.toArray();
