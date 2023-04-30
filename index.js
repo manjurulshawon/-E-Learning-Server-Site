@@ -175,12 +175,11 @@ async function run() {
       console.log("ok", req.body);
       const id = req.params.id;
       const status = req.body.status;
+      const updateData = req.body;
       const filter = { _id: new ObjectId(id) };
       // const options = { upsert: true };
       const updateDoc = {
-        $set: {
-          status: status,
-        },
+        $set: updateData
       };
       const result = await enrollsCollection.updateOne(filter, updateDoc);
       console.log("ok");
