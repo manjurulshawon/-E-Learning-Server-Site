@@ -185,6 +185,16 @@ async function run() {
       console.log("ok");
       res.json(result);
     });
+
+        app.delete("/enrolls/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await enrollsCollection.deleteOne(query);
+      res.json(result);
+    });
+
+
+
   } finally {
   }
 }
